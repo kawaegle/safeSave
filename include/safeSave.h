@@ -19,7 +19,7 @@
 #endif
 
 namespace sfs {
-enum Errors : int {
+enum Errors : size_t {
   noError = 0,
   couldNotOpenFinle,
   fileSizeDitNotMatch,
@@ -132,6 +132,7 @@ struct SafeSafeKeyValueData {
 
     std::vector<char> data;
     char type = 0;
+
     union Primitives {
       std::uint64_t uint64Data = 0;
       std::int64_t int64Data;
@@ -165,44 +166,54 @@ struct SafeSafeKeyValueData {
 
     // Implicit constructors for primitive types
     Entry() = default;
+
     Entry(int v) {
       type = int_type;
       primitives.intData = v;
     }
+
     Entry(float v) {
       type = float_type;
       primitives.floatData = v;
     }
+
     Entry(bool v) {
       type = bool_type;
       primitives.boolData = v;
     }
+
     Entry(std::int64_t v) {
       type = int64_type;
       primitives.int64Data = v;
     }
+
     Entry(std::uint64_t v) {
       type = uint64_type;
       primitives.uint64Data = v;
     }
+
     Entry(const std::string &v) {
       type = string_type;
       data.assign(v.begin(), v.end());
     }
+
     Entry(const char *v) : Entry(std::string(v)) {}
 
     Entry(char c) {
       type = char_type;
       primitives.charData = c;
     }
+
     Entry(unsigned char c) {
       type = uchar_type;
       primitives.uCharData = c;
     }
+
     Entry(unsigned int i) {
       type = uint_type;
       primitives.uintData = i;
     }
+
     Entry(double d) {
       type = double_type;
       primitives.doubleData = d;
@@ -214,6 +225,7 @@ struct SafeSafeKeyValueData {
       primitives.vec.x = x;
       primitives.vec.y = y;
     }
+
     Entry(float x, float y, float z) {
       type = vec3_type;
       primitives.vec = {};
@@ -221,6 +233,7 @@ struct SafeSafeKeyValueData {
       primitives.vec.y = y;
       primitives.vec.y = z;
     }
+
     Entry(float x, float y, float z, float w) {
       type = vec4_type;
       primitives.vec = {};
@@ -236,6 +249,7 @@ struct SafeSafeKeyValueData {
       primitives.ivec.x = x;
       primitives.ivec.y = y;
     }
+
     Entry(int x, int y, int z) {
       type = ivec3_type;
       primitives.ivec = {};
@@ -243,6 +257,7 @@ struct SafeSafeKeyValueData {
       primitives.ivec.y = y;
       primitives.ivec.y = z;
     }
+
     Entry(int x, int y, int z, int w) {
       type = ivec4_type;
       primitives.ivec = {};
@@ -437,6 +452,7 @@ Errors safeLoad(SafeSafeKeyValueData &data, const char *nameWithoutExtension,
 struct FileMapping {
   void *pointer = {};
   size_t size = 0;
+
   struct {
     void *fileHandle = 0;
     void *fileMapping = 0;
@@ -448,6 +464,7 @@ struct FileMapping {
 struct FileMapping {
   void *pointer = {};
   size_t size = 0;
+
   struct {
     int fd = 0;
   } internal = {};
