@@ -24,10 +24,9 @@
 #include <string>
 
 #if defined WIN32 || defined _WIN32 || defined __WIN32__ || defined __NT__
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
+#include <fileapi.h>
+#include <handleapi.h>
+#include <memoryapi.h>
 #elif defined __linux__
 #include <fcntl.h>
 #include <sys/mman.h>
