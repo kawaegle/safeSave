@@ -22,16 +22,14 @@
 #include <filesystem>
 #include <safeSave.h>
 #include <string>
-
+#define NOMINMAX
+#include <algorithm>
 #if defined WIN32 || defined _WIN32 || defined __WIN32__ || defined __NT__
-#include <fileapi.h>
-#include <handleapi.h>
-#include <memoryapi.h>
-#elif defined __linux__
+#include <windows.h>
+#elif defined __linux__ || defined LINUX
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-
 #endif
 
 namespace sfs {
@@ -101,7 +99,7 @@ Errors readEntireFile(void *data, size_t size, const char *name,
         return noError;
       }
     } else {
-      f.read((char *)data, std::min(size, readSize));
+        f.read((char *)data, static_cast<std::streamsize>(std::min(size, readSize))); 
 
       if (bytesRead) {
         *bytesRead = std::min(size, readSize);
@@ -456,7 +454,7 @@ void closeFileMapping(FileMapping &fileMapping) {
   fileMapping = {};
 }
 
-#elif defined __linux__
+#elif defined __linux__ || defined LINUX
 
 Errors openFileMapping(FileMapping &fileMapping, const char *name, size_t size,
                        bool createIfNotExisting) {
