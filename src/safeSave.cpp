@@ -99,7 +99,8 @@ Errors readEntireFile(void *data, size_t size, const char *name,
         return noError;
       }
     } else {
-        f.read((char *)data, static_cast<std::streamsize>(std::min(size, readSize))); 
+      f.read((char *)data,
+             static_cast<std::streamsize>(std::min(size, readSize)));
 
       if (bytesRead) {
         *bytesRead = std::min(size, readSize);
@@ -478,11 +479,12 @@ Errors openFileMapping(FileMapping &fileMapping, const char *name, size_t size,
                              fileMapping.internal.fd, 0);
 
   if (fileMapping.pointer == MAP_FAILED) {
-    fileMapping.pointer = 0;
+    fileMapping.pointer = nullptr;
     close(fileMapping.internal.fd);
     return Errors::couldNotOpenFinle;
   }
 
+  memset(fileMapping.pointer, 0, size);
   fileMapping.size = size;
 
   return Errors::noError;
@@ -494,7 +496,7 @@ void closeFileMapping(FileMapping &fileMapping) {
   munmap(fileMapping.pointer, fileMapping.size);
   close(fileMapping.internal.fd);
 
-  fileMapping = {};
+  fileMapping = {0};
 }
 
 #endif
@@ -1259,20 +1261,20 @@ Errors SafeSafeKeyValueData::getString(std::string at, std::string &s) {
 }
 
 std::vector<char> sfs::SafeSafeKeyValueData::formatIntoFileDataBinary() const {
-  std::vector<char> ret;
+  std::vector<char> ret = {};
 
-  size_t size = 0;
+  size_t total_size = 0;
   for (auto &e : entries) {
     auto &s = e.first;
     auto &d = e.second;
 
-    size += s.size() + 1;
-    size += d.data.size();
-    size += 1; // type
-    size += 4; // data size
+    total_size += s.size() + 1;
+    total_size += d.data.size();
+    total_size += 1; // type
+    total_size += 4; // data size
   }
 
-  ret.reserve(size);
+  ret.reserve(total_size);
 
   for (auto &e : entries) {
     auto &s = e.first;

@@ -462,7 +462,7 @@ struct FileMapping {
 #elif defined __linux__
 
 struct FileMapping {
-  void *pointer = {};
+  void *pointer = nullptr;
   size_t size = 0;
 
   struct {
